@@ -1,0 +1,67 @@
+%Markov chain code for Liang et al. (2011), absorbing Markov Chain example.
+
+%First define the states:
+%A = carbon removed from microbial sources to the air
+%L = carbon in the state of living microbial biomass
+%D = carbon in the state of microbial necromass (dead matter)
+
+%Initial state:
+x0=[0 100 0];
+
+%Transition probability matrix
+P= [1 0 0; 0.4 0.1 0.5; 0.125 0.000114 0.874886];
+
+%Without constant input:
+states=[];              %Create an empty matrix to store state sizes
+states(1,:)=x0;         %Call up the initial state
+for t=2:2000
+    x=x0*(P^(t-1));     %The states at time t
+    states(t,:)=x;      %Save the states to the state matrix
+end
+
+%Plot the state sizes over time
+figure(1)
+plot(states,'-*','MarkerSize',3)
+xlabel('Time (days)');
+ylabel('Carbon pool size (units arbitrary)');
+title({'Convergence of carbon pool size to steady states without a constant input',
+    'as predicted by an absorbing Markov Chain model from Liang et al. (2011)'});
+legend('Atmospheric carbon','Carbon in living microbial biomass','Carbon in microbial necromass');
+xlim([0 75]); ylim([0 110])
+
+
+%With constant input:
+Finput=[0 100 0];
+
+statesinput=[];                 %Create an empty matrix to store states
+statesinput(1,:)=x0;            %Call up the initial state
+for t=2:2000
+    x=statesinput(t-1,:)*P;     %The states at time t
+    x=x+Finput;                 %Add the constant input to living microbial biomass
+    statesinput(t,:)=x;         %Save the states to state matrix
+end
+
+%Subtract external input of 100 into living biomass to reflect only the
+%natural existing living biomass, sans input:
+statesinput(:,2)=statesinput(:,2)-100;
+
+%Plot the states over time with constant input
+figure(2)
+plot(statesinput,'-*','MarkerSize',3)
+xlabel('Time (days)');
+ylabel('Carbon pool size (units arbitrary)');
+title({'Sizes of carbon pools as predicted by an absorbing Markov Chain model',
+    'using a sample parameter set from Liang et al. (2011)'});
+legend('Atmospheric carbon','Carbon in living microbial biomass','Carbon in microbial necromass');
+xlim([0 45]); ylim([0 2500])
+
+
+%%
+%Calculate (I-Q)^-1 to prove Liang et al. (2011) use of fundamental matrix N.
+x = sym('1-pLL');
+y = sym('pLA + pLL - 1');
+z = sym('pDA + pDD - 1');
+w = sym('1 - pDD');
+
+IQ=[x y;z w];
+IQinv=inv(IQ)
