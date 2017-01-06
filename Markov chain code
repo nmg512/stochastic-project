@@ -58,10 +58,19 @@ xlim([0 45]); ylim([0 2500])
 
 %%
 %Calculate (I-Q)^-1 to prove Liang et al. (2011) use of fundamental matrix N.
-x = sym('1-pLL');
+x = sym('1-pLL');               %Symbolic representation of the entries of I-Q
 y = sym('pLA + pLL - 1');
 z = sym('pDA + pDD - 1');
 w = sym('1 - pDD');
 
-IQ=[x y;z w];
-IQinv=inv(IQ)
+IQ=[x y;z w];                   %Define I-Q
+IQinv=inv(IQ);                  %Calculate the inverse
+
+
+%Numerical estimate of how long carbon will persist in each soil state:
+Qmatrix=[0.1 0.5; 0.000114 0.874886];       %Numerical entries of Q
+Imatrix=[1 0; 0 1];                         %Numerical entries of I
+IminQ=Imatrix-Qmatrix;                      %Numerical (I-Q)
+IminQinv=inv(IminQ)                         %Calculate inverse of (I-Q)
+living=IminQinv(1,1) + IminQinv(1,2)        %Time carbon is in living biomass
+necromass=IminQinv(2,1)+IminQinv(2,2)       %Time carbon is in necromass
