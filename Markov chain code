@@ -29,8 +29,9 @@ title({'Convergence of carbon pool size to steady states without a constant inpu
 legend('Atmospheric carbon','Carbon in living microbial biomass','Carbon in microbial necromass');
 xlim([0 75]); ylim([0 110])
 
-
+%%
 %With constant input:
+x0=[0 100 0];
 Finput=[0 100 0];
 
 statesinput=[];                 %Create an empty matrix to store states
@@ -59,13 +60,12 @@ xlim([0 45]); ylim([0 2500])
 %%
 %Calculate (I-Q)^-1 to prove Liang et al. (2011) use of fundamental matrix N.
 x = sym('1-pLL');               %Symbolic representation of the entries of I-Q
-y = sym('pLA + pLL - 1');
-z = sym('pDA + pDD - 1');
+y = sym('-pLD');
+z = sym('-pDL');
 w = sym('1 - pDD');
 
 IQ=[x y;z w];                   %Define I-Q
-IQinv=inv(IQ);                  %Calculate the inverse
-
+IQinv=inv(IQ)                  %Calculate the inverse
 
 %Numerical estimate of how long carbon will persist in each soil state:
 Qmatrix=[0.1 0.5; 0.000114 0.874886];       %Numerical entries of Q
@@ -74,3 +74,5 @@ IminQ=Imatrix-Qmatrix;                      %Numerical (I-Q)
 IminQinv=inv(IminQ)                         %Calculate inverse of (I-Q)
 living=IminQinv(1,1) + IminQinv(1,2)        %Time carbon is in living biomass
 necromass=IminQinv(2,1)+IminQinv(2,2)       %Time carbon is in necromass
+
+%Living = 5.5543; Necromass = 7.9978
