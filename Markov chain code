@@ -45,14 +45,13 @@ end
 %Subtract external input of 100 into living biomass to reflect only the
 %natural existing living biomass, sans input:
 statesinput(:,2)=statesinput(:,2)-100;
-
 %Plot the states over time with constant input
 figure(2)
 plot(statesinput,'-*','MarkerSize',3)
-xlabel('Time (days)');
-ylabel('Carbon pool size (units arbitrary)');
+xlabel('Time (days)','FontSize',14);
+ylabel('Carbon pool size (units arbitrary)','FontSize',14);
 title({'Sizes of carbon pools as predicted by an absorbing Markov Chain model',
-    'using a sample parameter set from Liang et al. (2011)'});
+    'using a sample parameter set from Liang et al. (2011)'},'FontSize',15);
 legend('Atmospheric carbon','Carbon in living microbial biomass','Carbon in microbial necromass');
 xlim([0 45]); ylim([0 2500])
 
